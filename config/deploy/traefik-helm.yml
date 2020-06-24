@@ -1,0 +1,41 @@
+# Installed this way:
+# helm install traefik stable/traefik --values config/deploy/traefik-helm.yml --namespace kube-system
+
+# Upgraded this way:
+# helm upgrade traefik stable/traefik --values config/deploy/traefik-helm.yml --namespace kube-system
+
+imageTag: 1.7.22
+# When first installed, Google will issue you an ephemeral IP address. Once
+# traefik has been deployed, then you will see the IP (instructions when
+# you run `helm traefik install`). Put that IP below, so when you upgrade
+# next, you will continue using the same IP.
+#
+# However, remember to make the IP assigned to you a static IP. Go to
+# "External IP addresses" on Google Cloud and change the IP from Ephemeral
+# to Static.
+# loadBalancerIP: x.x.x.x
+dashboard:
+  enabled: true
+  domain: traefik.your-domain.com
+  auth:
+    basic:
+      # Did not `sed` like traefik suggested. It caused this to always
+      # be wrong. Just: `echo $(htpasswd -nb admin pass)`
+      admin: "$aprxyz"
+ssl:
+  enabled: true
+  enforced: true
+acme:
+  enabled: true
+  # test out that you're assigned an SSL cert correctly. Change
+  # staging to `false` when you have everything running and you can access
+  # your website, then `helm upgrade...`
+  staging: true
+  logging: true
+  email: your@email.com
+rbac:
+  # Need to work for GCP
+  enabled: true
+
+# Let your app see the requesting IP and not the IP of traefik
+externalTrafficPolicy: Local

@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: prod-namespace
+  annotations:
+    krane.shopify.io/restart: "true"
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: us.gcr.io/your-google-project-id/your-image:<%= current_sha %>
+          command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+          resources:
+            requests:
+              cpu: 512m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 1.5Gi
+          ports:
+            - name: web-port
+              containerPort: 3000
+          env: <%= partial "env" %>
+          readinessProbe:
+            tcpSocket:
+              port: web-port
+            initialDelaySeconds: 120
+            timeoutSeconds: 30
+          livenessProbe:
+            tcpSocket:
+              port: web-port
+            initialDelaySeconds: 180
+            timeoutSeconds: 30

@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: prod-namespace
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: mydomain.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web
+          servicePort: http

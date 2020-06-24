@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+# bin/deploy <environment> <branch_name>
+# e.g bin/deploy staging staging_06
+# $CLUSTER is assumed to be set. Use something like direnv for this.
+
+env=$1
+namespace=your-app-$env
+current_sha=$(git rev-parse --verify $2)
+
+krane render --current-sha=$current_sha \
+  --filenames=config/deploy/$env | \
+  krane deploy $namespace $CLUSTER --stdin \
+  --filenames=config/deploy/$env/secrets.ejson
