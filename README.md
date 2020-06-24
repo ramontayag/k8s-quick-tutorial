@@ -1,3 +1,5 @@
+Quick tutorial I made for someone that wants to deploy to Google Kubernetes. Not meant to be a full-fledged tutorial, but merely a guide. Reader must fill in the gaps.
+
 In my app, I have the structure:
 
 ```
